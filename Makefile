@@ -2,7 +2,7 @@
 
 CC = gcc
 CCFLAGS = -Wall
-LDFLAGS = -O3 -pthread 
+LDFLAGS = -pthread 
 TARGET = main
 
 %.o: %.c

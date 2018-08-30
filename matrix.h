@@ -43,7 +43,8 @@ void matrix_sum(int *ini, int *fim, matrix_t *A, matrix_t *B, matrix_t *s);
 
 matrix_t *matrix_inversion(matrix_t *A, matrix_t *(*p) (int, int));
 
-matrix_t *matrix_transpose(matrix_t *A, matrix_t *(*p) (int, int));
+//matrix_t *matrix_transpose(matrix_t *A, matrix_t *(*p) (int, int));
+void matrix_transpose(int ini, int fim, matrix_t *A, matrix_t *t);
 
 double matrix_determinant(matrix_t *A);
 
@@ -59,5 +60,7 @@ int matrix_equal(matrix_t*A, matrix_t *B);
 void *matrix_sum_PARALELA(void *args);
 
 void *matrix_multiply_PARALELA(void *args);
+
+void *matrix_transpose_PARALELA(void *args);
 
 #endif
