@@ -58,60 +58,13 @@ int main(int argc, char **argv)
    c = matrix_create_block(nrows, ncols);
    matrix_randfill(a);
    matrix_randfill(b);
-/*
+   /*
    int bloco;
    bloco = a->rows/num_threads;
    //printf("bloco: %i\n",bloco );
    //printf("c");
 
-*/
-    /*
-    //inicio multiplicação
-    for (i = 0; i < num_threads-1; i++) {
-        dt[i].id = i;
-        dt[i].A = a;
-        dt[i].B = b;
-        dt[i].C = c;
-        dt[i].iniA[0] = i*bloco;
-        dt[i].iniA[1] = 0;
-        dt[i].iniB[0] = i*bloco;
-        dt[i].iniB[1] = 0;
-        dt[i].fimA[0] = (dt[i].id*bloco)+bloco;
-        dt[i].fimA[1] = a->cols;
-        dt[i].fimB[0] = (dt[i].id*bloco)+bloco;
-        dt[i].fimB[1] = b->cols;
-        printf("a");
-        pthread_create(&threads[i], NULL, matrix_multiply_PARALELA, (void *) (dt + i));
-     }
-    dt[i].id = num_threads-1;
-    dt[i].A = a;
-    dt[i].B = b;
-    dt[i].C = c;
-    dt[i].iniA[0] = (num_threads-1)*bloco;
-    dt[i].iniA[1] = 0;
-    dt[i].iniB[0] = (num_threads-1)*bloco;
-    dt[i].iniB[1] = 0;
-    dt[i].fimA[0] = a->rows;
-    dt[i].fimA[1] = a->cols;
-    dt[i].fimB[0] = b->rows;
-    dt[i].fimB[1] = b->cols;
-    pthread_create(&threads[num_threads-1], NULL, matrix_multiply_PARALELA, (void *) (dt + num_threads-1));
-    //fim multiplicação
-
-	for (i = 0; i < num_threads; i++) {
-        //printf("mandando rodar?\n");
-	    pthread_join(threads[i], NULL);
-	}
-
-    matrix_print(a);
-    printf("\n");
-    matrix_print(b);
-    printf("\n");
-    matrix_print(c);
-
-	free(dt);
-	free(threads);
-  */
+   */
   /*
    //inicio transposta
    for (i = 0; i < num_threads-1; i++) {
@@ -188,6 +141,7 @@ int main(int argc, char **argv)
    matrix_destroy_block(c);
    //fim_sum--------------------------------
    */
+   /*
    //ini_multi--------------------------------
    a = matrix_create_block(nrows, ncols);
    b = matrix_create_block(nrows, ncols);
@@ -207,6 +161,23 @@ int main(int argc, char **argv)
    matrix_destroy_block(b);
    matrix_destroy_block(c);
    //fim_multi--------------------------------
+   */
+   /*
+   //ini_transpo--------------------------------
+   a = matrix_create_block(nrows, ncols);
+   c = matrix_create_block(nrows, ncols);
+   matrix_randfill(a);
+   matrix_transpo_PARALELA_INI(a, c, num_threads);
+
+   //printf("\n");
+   //matrix_print(a);
+   //printf("\n");
+   //matrix_print(c);
+
+   matrix_destroy_block(a);
+   matrix_destroy_block(c);
+   //fim_transpo--------------------------------
+   */
 
    end_time = wtime();
 
