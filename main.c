@@ -17,81 +17,6 @@ double wtime()
    gettimeofday(&t, NULL);
    return t.tv_sec + t.tv_usec / 1000000.0;
 }
-/*
-void teste_create_pointers(int nrows, int ncols)
-{
-    matrix_t *p;
-    p = matrix_create_pointers(nrows, ncols);
-    matrix_randfill(p);
-    //matrix_print(p);
-    //printf("%lf\n", p->data[0][0]);
-    //printf("%lf\n", p->data[0][1]);
-    //printf("%lf\n", p->data[1][0]);
-    //printf("%lf\n", p->data[1][1]);
-    matrix_destroy_pointers(p);
-}
-
-void teste_create_block(int nrows, int ncols){
-    matrix_t *p;
-    p = matrix_create_block(nrows, ncols);
-    matrix_randfill(p);
-    //matrix_print(p);
-    //printf("%lf\n", p->data[0][0]);
-    //printf("%lf\n", p->data[0][1]);
-    //printf("%lf\n", p->data[1][0]);
-    //printf("%lf\n", p->data[1][1]);
-    matrix_destroy_block(p);
-}
-
-void teste_sum_block(int nrows, int ncols){
-    matrix_t *a, *b, *c;
-    a = matrix_create_block(nrows, ncols);
-    b = matrix_create_block(nrows, ncols);
-    matrix_randfill(a);
-    matrix_randfill(b);
-    c = matrix_sum(a, b, matrix_create_block);
-    //matrix_print(a);
-    //printf("\n");
-    //matrix_print(b);
-    //printf("\n");
-    //matrix_print(c);
-
-    matrix_destroy_block(a);
-    matrix_destroy_block(b);
-    matrix_destroy_block(c);
-}
-
-void teste_transp_block(int nrows, int ncols){
-    matrix_t *a, *c;
-    a = matrix_create_block(nrows, ncols);
-    matrix_randfill(a);
-    c = matrix_transpose(a, matrix_create_block);
-    //matrix_print(a);
-    //printf("\n");
-    //matrix_print(c);
-
-    matrix_destroy_block(a);
-    matrix_destroy_block(c);
-}
-
-void teste_mul_block(int nrows, int ncols){
-    matrix_t *a, *b, *c;
-    a = matrix_create_block(nrows, ncols);
-    b = matrix_create_block(nrows, ncols);
-    matrix_randfill(a);
-    matrix_randfill(b);
-    c = matrix_multiply(a, b, matrix_create_block);
-    //matrix_print(a);
-    //printf("\n");
-    //matrix_print(b);
-    //printf("\n");
-    //matrix_print(c);
-
-    matrix_destroy_block(a);
-    matrix_destroy_block(b);
-    matrix_destroy_block(c);
-}
-*/
 
 int main(int argc, char **argv)
 {
@@ -129,14 +54,14 @@ int main(int argc, char **argv)
         printf("Erro ao alocar memória\n");
         exit(EXIT_FAILURE);
    }
-
+   */
    //create matrix a, b, c
    a = matrix_create_block(nrows, ncols);
    b = matrix_create_block(nrows, ncols);
    c = matrix_create_block(nrows, ncols);
    matrix_randfill(a);
    matrix_randfill(b);
-
+/*
    int bloco;
    bloco = a->rows/num_threads;
    //printf("bloco: %i\n",bloco );
@@ -268,92 +193,42 @@ int main(int argc, char **argv)
 
 
 
-   //sum--------------------------------
-   /*
-   a = matrix_create_block(nrows, ncols);
-   b = matrix_create_block(nrows, ncols);
-   matrix_randfill(a);
-   matrix_randfill(b);
-   c = matrix_sum(a, b, matrix_create_block);
-   //matrix_print(a);
-   //printf("\n");
-   //matrix_print(b);
-   //printf("\n");
-   //matrix_print(c);
-
-   matrix_destroy_block(a);
-   matrix_destroy_block(b);
-   matrix_destroy_block(c);
-   //-----------------------------------
-   //transp-----------------------------
-   a = matrix_create_block(nrows, ncols);
-   matrix_randfill(a);
-   c = matrix_transpose(a, matrix_create_block);
-   //matrix_print(a);
-   //printf("\n");
-   //matrix_print(c);
-   matrix_destroy_block(a);
-   matrix_destroy_block(c);
-   //-----------------------------------
-   //multi------------------------------
-   a = matrix_create_block(nrows, ncols);
-   b = matrix_create_block(nrows, ncols);
-   matrix_randfill(a);
-   matrix_randfill(b);
-   c = matrix_multiply(a, b, matrix_create_block);
-   matrix_destroy_block(a);
-   matrix_destroy_block(b);
-   matrix_destroy_block(c);
-   //matrix_print(a);
-   //printf("\n");
-   //matrix_print(b);
-   //printf("\n");
-   //matrix_print(c);
-   //-----------------------------------
    //det--------------------------------
-   */
+   /*
    a = matrix_create_block(nrows, ncols);
    matrix_randfill(a);
    det = matrix_determinant_PARALELA(a, num_threads);
    printf("Determinante: %lf\n", det);
    printf("\n");
-   
-   /*
-   //-----------------------------------
-   //inv--------------------------------
-   a = matrix_create_block(nrows, ncols);
-   matrix_randfill(a);
-   c = matrix_inversion(a, matrix_create_block);
-   printf("%lf\n", det);
-   printf("\n");
+
    matrix_destroy_block(a);
-   matrix_destroy_block(c);
-   //-----------------------------------
+
+   //fim
    */
-   /*
+
+   //sum--------------------------------
    a = matrix_create_block(nrows, ncols);
    b = matrix_create_block(nrows, ncols);
    c = matrix_create_block(nrows, ncols);
    matrix_randfill(a);
-   b = matrix_inversion(a, matrix_create_block);
-   c = matrix_multiply(a, b, matrix_create_block);
+   matrix_randfill(b);
+   matrix_sum_PARALELA_INI(a, b, c, num_threads);
+
+   /*
+   printf("\n");
    matrix_print(a);
    printf("\n");
    matrix_print(b);
    printf("\n");
    matrix_print(c);
-   printf("\n");
    */
-   //det = matrix_determinant(a);
-   //matrix_print(a);
-   //printf("\n");
-   //printf("%lf\n", det);
-   //printf("\n");
+
    matrix_destroy_block(a);
-   //matrix_destroy_block(b);
-   //matrix_destroy_block(c);
+   matrix_destroy_block(b);
+   matrix_destroy_block(c);
 
    //fim
+
    end_time = wtime();
 
    printf("%d %d %f\n", nrows, ncols, end_time - start_time);

@@ -212,11 +212,63 @@ void matrix_sum(int *ini, int *fim, matrix_t *A, matrix_t *B, matrix_t *s)
 void *matrix_sum_PARALELA(void *args)
 {
     DadosThread *p = (DadosThread *) args;
-    //printf("bb\n");
-    //printf("dados da thread %i:\n\tini[0]:%i,\tfim[0]:%i,\tini[1]:%i, \tfim[1]:%i\n", p->id, p->iniA[0], p->fimA[0], p->iniA[1], p->fimA[1]);
+
     matrix_sum(p->iniA, p->fimA, p->A, p->B, p->C);
     return NULL;
 }
+
+void matrix_sum_PARALELA_INI(matrix_t *a, matrix_t *b, matrix_t *c, int num_threads){
+  DadosThread *dt = NULL;
+  pthread_t *threads = NULL;
+  int bloco, i;
+
+  if (!(dt = (DadosThread *) malloc(sizeof(DadosThread) * num_threads))) {
+    printf("Erro ao alocar memória\n");
+    exit(EXIT_FAILURE);
+  }
+
+  if (!(threads = (pthread_t *) malloc(sizeof(pthread_t) * num_threads))) {
+    printf("Erro ao alocar memória\n");
+    exit(EXIT_FAILURE);
+  }
+
+  bloco = a->rows/num_threads;
+  for (i = 0; i < num_threads-1; i++) {
+    dt[i].id = i;
+    dt[i].A = a;
+    dt[i].B = b;
+    dt[i].C = c;
+    dt[i].iniA[0] = i*bloco;
+    dt[i].iniA[1] = 0;
+    dt[i].iniB[0] = i*bloco;
+    dt[i].iniB[1] = 0;
+    dt[i].fimA[0] = (dt[i].id*bloco)+bloco;
+    dt[i].fimA[1] = a->cols;
+    dt[i].fimB[0] = (dt[i].id*bloco)+bloco;
+    dt[i].fimB[1] = b->cols;
+    pthread_create(&threads[i], NULL, matrix_sum_PARALELA, (void *) (dt + i));
+  }
+  dt[i].id = num_threads-1;
+  dt[i].A = a;
+  dt[i].B = b;
+  dt[i].C = c;
+  dt[i].iniA[0] = (num_threads-1)*bloco;
+  dt[i].iniA[1] = 0;
+  dt[i].iniB[0] = (num_threads-1)*bloco;
+  dt[i].iniB[1] = 0;
+  dt[i].fimA[0] = a->rows;
+  dt[i].fimA[1] = a->cols;
+  dt[i].fimB[0] = b->rows;
+  dt[i].fimB[1] = b->cols;
+
+  pthread_create(&threads[num_threads-1], NULL, matrix_sum_PARALELA, (void *) (dt + num_threads-1));
+  for (i = 0; i < num_threads; i++) {
+	    pthread_join(threads[i], NULL);
+	}
+  free(threads);
+}
+
+
 
 matrix_t *matrix_inversion(matrix_t *A, matrix_t *(*p) (int, int))
 {
