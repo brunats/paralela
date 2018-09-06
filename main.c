@@ -39,24 +39,21 @@ int main(int argc, char **argv)
    scanf("%d", &op);
 
    start_time = wtime();
+   a = matrix_create_block(nrows, ncols);
+   matrix_randfill(a);
    switch (op){
      case 1:{
        //ini_det--------------------------------
-       a = matrix_create_block(nrows, ncols);
-       matrix_randfill(a);
        det = matrix_determinant_PARALELA(a, num_threads);
        //printf("Determinante: %lf\n", det);
        //printf("\n");
-       matrix_destroy_block(a);
        //fim_det--------------------------------
        break;
      }
      case 2:{
        //ini_sum--------------------------------
-       a = matrix_create_block(nrows, ncols);
        b = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
-       matrix_randfill(a);
        matrix_randfill(b);
        matrix_sum_PARALELA_INI(a, b, c, num_threads);
 
@@ -67,7 +64,6 @@ int main(int argc, char **argv)
        //printf("\n");
        //matrix_print(c);
 
-       matrix_destroy_block(a);
        matrix_destroy_block(b);
        matrix_destroy_block(c);
        break;
@@ -75,10 +71,8 @@ int main(int argc, char **argv)
      }
      case 3:{
        //ini_multi--------------------------------
-       a = matrix_create_block(nrows, ncols);
        b = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
-       matrix_randfill(a);
        matrix_randfill(b);
        matrix_multi_PARALELA_INI(a, b, c, num_threads);
 
@@ -88,8 +82,7 @@ int main(int argc, char **argv)
        //matrix_print(b);
        //printf("\n");
        //matrix_print(c);
-
-       matrix_destroy_block(a);
+       
        matrix_destroy_block(b);
        matrix_destroy_block(c);
        //fim_multi--------------------------------
@@ -97,17 +90,14 @@ int main(int argc, char **argv)
      }
      case 4:{
        //ini_transpo--------------------------------
-       a = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
-       matrix_randfill(a);
        matrix_transpo_PARALELA_INI(a, c, num_threads);
 
        //printf("\n");
        //matrix_print(a);
        //printf("\n");
        //matrix_print(c);
-
-       matrix_destroy_block(a);
+       
        matrix_destroy_block(c);
        //fim_transpo--------------------------------
        break;
@@ -116,6 +106,7 @@ int main(int argc, char **argv)
        printf("nada nada nada\n");
      }
    }
+   matrix_destroy_block(a);
    end_time = wtime();
 
    printf("%d %d %f\n", nrows, ncols, end_time - start_time);
