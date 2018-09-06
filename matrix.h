@@ -71,4 +71,7 @@ void *matrix_multiply_PARALELA(void *args);
 
 void *matrix_transpose_PARALELA(void *args);
 
+void matrix_sum_PARALELA_INI(matrix_t *a, matrix_t *b, matrix_t *c, int num_threads);
+void matrix_multi_PARALELA_INI(matrix_t *a, matrix_t *b, matrix_t *c, int num_threads);
+
 #endif

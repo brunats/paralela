@@ -21,9 +21,8 @@ double wtime()
 int main(int argc, char **argv)
 {
    double start_time, end_time, det;
-   int nrows, ncols;
+   int nrows, ncols, i;
    int num_threads = 0;
-   int i;
    matrix_t *a, *b, *c;
 
    if ((argc != 4)) {
@@ -35,9 +34,7 @@ int main(int argc, char **argv)
    ncols = atoi(argv[2]);
    num_threads = atoi(argv[3]);
 
-
    printf("num_threads = %d\n", num_threads);
-
 
    start_time = wtime();
    //inicio
@@ -69,39 +66,6 @@ int main(int argc, char **argv)
 
 */
     /*
-    //inicio soma
-    for (i = 0; i < num_threads-1; i++) {
-        dt[i].id = i;
-        dt[i].A = a;
-        dt[i].B = b;
-        dt[i].C = c;
-        dt[i].iniA[0] = i*bloco;
-        dt[i].iniA[1] = 0;
-        dt[i].iniB[0] = i*bloco;
-        dt[i].iniB[1] = 0;
-        dt[i].fimA[0] = (dt[i].id*bloco)+bloco;
-        dt[i].fimA[1] = a->cols;
-        dt[i].fimB[0] = (dt[i].id*bloco)+bloco;
-        dt[i].fimB[1] = b->cols;
-        printf("a");
-        pthread_create(&threads[i], NULL, matrix_sum_PARALELA, (void *) (dt + i));
-     }
-    dt[i].id = num_threads-1;
-    dt[i].A = a;
-    dt[i].B = b;
-    dt[i].C = c;
-    dt[i].iniA[0] = (num_threads-1)*bloco;
-    dt[i].iniA[1] = 0;
-    dt[i].iniB[0] = (num_threads-1)*bloco;
-    dt[i].iniB[1] = 0;
-    dt[i].fimA[0] = a->rows;
-    dt[i].fimA[1] = a->cols;
-    dt[i].fimB[0] = b->rows;
-    dt[i].fimB[1] = b->cols;
-    pthread_create(&threads[num_threads-1], NULL, matrix_sum_PARALELA, (void *) (dt + num_threads-1));
-    //fim soma
-
-
     //inicio multiplicação
     for (i = 0; i < num_threads-1; i++) {
         dt[i].id = i;
@@ -192,21 +156,19 @@ int main(int argc, char **argv)
  */
 
 
-
-   //det--------------------------------
    /*
+   //ini_det--------------------------------
    a = matrix_create_block(nrows, ncols);
    matrix_randfill(a);
    det = matrix_determinant_PARALELA(a, num_threads);
-   printf("Determinante: %lf\n", det);
-   printf("\n");
-
+   //printf("Determinante: %lf\n", det);
+   //printf("\n");
    matrix_destroy_block(a);
-
-   //fim
+   //fim_det--------------------------------
    */
 
-   //sum--------------------------------
+   /*
+   //ini_sum--------------------------------
    a = matrix_create_block(nrows, ncols);
    b = matrix_create_block(nrows, ncols);
    c = matrix_create_block(nrows, ncols);
@@ -214,20 +176,37 @@ int main(int argc, char **argv)
    matrix_randfill(b);
    matrix_sum_PARALELA_INI(a, b, c, num_threads);
 
-   /*
-   printf("\n");
-   matrix_print(a);
-   printf("\n");
-   matrix_print(b);
-   printf("\n");
-   matrix_print(c);
-   */
+   //printf("\n");
+   //matrix_print(a);
+   //printf("\n");
+   //matrix_print(b);
+   //printf("\n");
+   //matrix_print(c);
 
    matrix_destroy_block(a);
    matrix_destroy_block(b);
    matrix_destroy_block(c);
+   //fim_sum--------------------------------
+   */
+   //ini_multi--------------------------------
+   a = matrix_create_block(nrows, ncols);
+   b = matrix_create_block(nrows, ncols);
+   c = matrix_create_block(nrows, ncols);
+   matrix_randfill(a);
+   matrix_randfill(b);
+   matrix_multi_PARALELA_INI(a, b, c, num_threads);
 
-   //fim
+   //printf("\n");
+   //matrix_print(a);
+   //printf("\n");
+   //matrix_print(b);
+   //printf("\n");
+   //matrix_print(c);
+
+   matrix_destroy_block(a);
+   matrix_destroy_block(b);
+   matrix_destroy_block(c);
+   //fim_multi--------------------------------
 
    end_time = wtime();
 
