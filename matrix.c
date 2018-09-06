@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <pthread.h>
 #include "matrix.h"
 
 matrix_t *matrix_create_block(int rows, int cols)
@@ -124,7 +125,8 @@ matrix_t *matrix_multiply(matrix_t *A, matrix_t *B, matrix_t *(*p) (int, int))
 }
 */
 
-void matrix_multiply(int iniA, int fimA, matrix_t *A, matrix_t *B, matrix_t *m){
+void matrix_multiply(int iniA, int fimA, matrix_t *A, matrix_t *B, matrix_t *m)
+{
     int i, j, k;
     double soma;
 
@@ -140,7 +142,8 @@ void matrix_multiply(int iniA, int fimA, matrix_t *A, matrix_t *B, matrix_t *m){
 
 }
 
-void *matrix_multiply_PARALELA(void *args){
+void *matrix_multiply_PARALELA(void *args)
+{
 
     DadosThread *p = (DadosThread *) args;
     matrix_multiply(p->iniA[0], p->fimA[0], p->A, p->B, p->C);
@@ -206,7 +209,6 @@ void matrix_sum(int *ini, int *fim, matrix_t *A, matrix_t *B, matrix_t *s)
     //printf("cc\n");
 }
 
-
 void *matrix_sum_PARALELA(void *args)
 {
     DadosThread *p = (DadosThread *) args;
@@ -259,6 +261,7 @@ matrix_t *matrix_inversion(matrix_t *A, matrix_t *(*p) (int, int))
 
         for(k=(i+1);k< temp->rows;k++){
             c = (temp->data[k][i])/(temp->data[i][i]);
+
             for(l=0;l<i;l++){
                 inv->data[k][l] = inv->data[k][l] - c*inv->data[i][l];
             }
@@ -273,6 +276,7 @@ matrix_t *matrix_inversion(matrix_t *A, matrix_t *(*p) (int, int))
     for(j=0;j< temp->cols;j++){
         inv->data[(temp->rows)-1][j] = (inv->data[(temp->rows)-1][j])/c;
     }
+
 
     //baixo para cima
     for(i=(temp->rows)-1;i>0;i--){
@@ -331,7 +335,196 @@ void *matrix_transpose_PARALELA(void *args)
     return NULL;
 }
 
-double matrix_determinant(matrix_t *A){
+double matrix_determinant(matrix_t *A)
+{
+
+    matrix_t *temp = NULL;
+    int i, j, k, l;
+    double c;
+    double det = 1.0;
+
+    if(A->rows != A->cols){
+        printf("A matriz não é quadrada\n");
+        return -1;
+    }
+    if(A->rows == 1){
+        return A->data[0][0];
+    }
+    if(A->rows == 2){
+        return (A->data[0][0]*A->data[1][1]) - (A->data[0][1]*A->data[1][0]);
+    }
+
+    temp = matrix_create_block(A->rows, A->cols);
+    for(i=0;i< A->rows;i++){
+        for(j=0;j< A->cols;j++){
+            temp->data[i][j] = A->data[i][j];
+        }
+    }
+
+    for(i=0;i< (temp->rows)-1;i++){
+        if(temp->data[i][i] == 0.0e0){
+            //printf("A matriz não é inversível\n");
+            return 0.0e0;
+        }
+
+        for(k=(i+1);k< temp->rows;k++){
+            c = (temp->data[k][i])/(temp->data[i][i]);
+            for(l=i;l< temp->cols;l++){
+                temp->data[k][l] = temp->data[k][l] - c*temp->data[i][l];
+            }
+        }
+    }
+
+    for(i=0;i<temp->rows;i++){
+        det = det*temp->data[i][i];
+    }
+
+    matrix_destroy_block(temp);
+
+    return det;
+}
+
+double matrix_determinant_PARALELA(matrix_t *A, int num_threads)
+{
+    matrix_t *temp = NULL;
+    int i, j, k, l;
+    int bloco;
+    double det = 1.0;
+    double c;
+    DadosThread *dt = NULL;
+    pthread_t *threads = NULL;
+
+    if(A->rows != A->cols){
+        printf("A matriz não é quadrada\n");
+        return -1;
+    }
+
+    //testa casos triviais
+    if(A->rows == 1){
+        return A->data[0][0];
+    }
+    if(A->rows == 2){
+        return (A->data[0][0]*A->data[1][1]) - (A->data[0][1]*A->data[1][0]);
+    }
+    //
+
+    //aloca threads e dados thread
+    if (!(dt = (DadosThread *) malloc(sizeof(DadosThread) * num_threads))) {
+		printf("Erro ao alocar memória\n");
+		exit(EXIT_FAILURE);
+	}
+
+    if (!(threads = (pthread_t *) malloc(sizeof(pthread_t) * num_threads))) {
+        printf("Erro ao alocar memória\n");
+        exit(EXIT_FAILURE);
+    }
+    //
+
+    temp = matrix_create_block(A->rows, A->cols);
+    bloco = A->rows/num_threads;
+    for(i=0;i<num_threads-1;i++){
+        dt[i].id = i;
+        dt[i].A = A;
+        dt[i].B = temp;
+        dt[i].iniA[0] = i*bloco;
+        dt[i].fimA[0] = (i*bloco)+bloco;
+        pthread_create(&threads[i], NULL, matrix_copia_block, (void *) (dt + i));
+    }
+    dt[num_threads-1].id = num_threads-1;
+    dt[num_threads-1].A = A;
+    dt[num_threads-1].B = temp;
+    dt[num_threads-1].iniA[0] = (num_threads-1)*bloco;
+    dt[num_threads-1].fimA[0] = A->rows;
+    pthread_create(&threads[num_threads-1], NULL, matrix_copia_block, (void *) (dt + num_threads-1));
+
+    for (i = 0; i < num_threads; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    //matrix_print(temp);
+    //printf("\n");
+
+    for(i=0;i< (temp->rows)-1;i++){
+        if(temp->data[i][i] == 0.0e0){
+            //printf("A matriz não é inversível\n");
+            return 0.0e0;
+        }
+
+        if(num_threads > (temp->rows - i)){
+            for(k=(i+1);k< temp->rows;k++){
+                c = (temp->data[k][i])/(temp->data[i][i]);
+                for(l=i;l< temp->cols;l++){
+                    temp->data[k][l] = temp->data[k][l] - c*temp->data[i][l];
+                }
+            }
+        }
+        else{
+            bloco = (temp->rows - i)/num_threads;
+            for(j=0;j<num_threads-1;j++){
+                dt[j].id = j;
+                dt[j].A = temp;
+                dt[j].iniA[0] = i + 1 + j*bloco;
+                dt[j].fimA[0] = i + 1 + (j*bloco)+bloco;
+                dt[j].iniB[0] = i;
+                pthread_create(&threads[j], NULL, matrix_determinant_block, (void *) (dt + j));
+            }
+            dt[num_threads-1].id = num_threads-1;
+            dt[num_threads-1].A = temp;
+            dt[num_threads-1].iniA[0] = i + 1 + (num_threads-1)*bloco;
+            dt[num_threads-1].fimA[0] = temp->rows;
+            dt[num_threads-1].iniB[0] = i;
+            pthread_create(&threads[num_threads-1], NULL, matrix_determinant_block, (void *) (dt + num_threads-1));
+
+            for (k = 0; k < num_threads; k++) {
+                pthread_join(threads[k], NULL);
+            }
+        }
+    }
+
+    //matrix_print(temp);
+    //printf("\n");
+
+    for(i=0;i<temp->rows;i++){
+        det = det*temp->data[i][i];
+    }
+
+    matrix_destroy_block(temp);
+
+    return det;
+}
+
+void *matrix_copia_block(void *args)
+{
+    int i, j;
+    DadosThread *p = (DadosThread *) args;
+
+    for(i=p->iniA[0];i< p->fimA[0];i++){
+        for(j=0;j< p->A->cols;j++){
+            p->B->data[i][j] = p->A->data[i][j];
+        }
+    }
+
+    return NULL;
+}
+
+void *matrix_determinant_block(void *args)
+{
+    DadosThread *p = (DadosThread *) args;
+    int k, l;
+    double c;
+
+    for(k=p->iniA[0];k< p->fimA[0];k++){
+        c = (p->A->data[k][p->iniB[0]])/(p->A->data[p->iniB[0]][p->iniB[0]]);
+        for(l=p->iniB[0];l< p->A->cols;l++){
+            p->A->data[k][l] = p->A->data[k][l] - c*p->A->data[p->iniB[0]][l];
+        }
+    }
+
+    return NULL;
+}
+
+double matrix_determinant_antiga(matrix_t *A)
+{
     double det;
 
     if(A->rows != A->cols){
@@ -346,7 +539,8 @@ double matrix_determinant(matrix_t *A){
     return det;
 }
 
-double matrix_determinant_rec(matrix_t *A){
+double matrix_determinant_rec(matrix_t *A)
+{
 
     double det = 0.0;
     int sinal = 1;
@@ -366,7 +560,8 @@ double matrix_determinant_rec(matrix_t *A){
     return det;
 }
 
-matrix_t *submatrix(matrix_t *A, int pos){
+matrix_t *submatrix(matrix_t *A, int pos)
+{
 
     int i=0, j=0;
     int linha, coluna;

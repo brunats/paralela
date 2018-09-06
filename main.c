@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 
    start_time = wtime();
    //inicio
-
+   /*
    DadosThread *dt = NULL;
    pthread_t *threads = NULL;
 
@@ -142,6 +142,7 @@ int main(int argc, char **argv)
    //printf("bloco: %i\n",bloco );
    //printf("c");
 
+*/
     /*
     //inicio soma
     for (i = 0; i < num_threads-1; i++) {
@@ -222,7 +223,7 @@ int main(int argc, char **argv)
 	free(dt);
 	free(threads);
   */
-  
+  /*
    //inicio transposta
    for (i = 0; i < num_threads-1; i++) {
        dt[i].id = i;
@@ -263,6 +264,7 @@ int main(int argc, char **argv)
    //matrix_print(c);
  free(dt);
  free(threads);
+ */
 
 
 
@@ -309,12 +311,14 @@ int main(int argc, char **argv)
    //matrix_print(c);
    //-----------------------------------
    //det--------------------------------
+   */
    a = matrix_create_block(nrows, ncols);
    matrix_randfill(a);
-   det = matrix_determinant(a);
-   printf("%lf\n", det);
+   det = matrix_determinant_PARALELA(a, num_threads);
+   printf("Determinante: %lf\n", det);
    printf("\n");
-   matrix_destroy_block(a);
+   
+   /*
    //-----------------------------------
    //inv--------------------------------
    a = matrix_create_block(nrows, ncols);
@@ -346,8 +350,8 @@ int main(int argc, char **argv)
    //printf("%lf\n", det);
    //printf("\n");
    matrix_destroy_block(a);
-   matrix_destroy_block(b);
-   matrix_destroy_block(c);
+   //matrix_destroy_block(b);
+   //matrix_destroy_block(c);
 
    //fim
    end_time = wtime();

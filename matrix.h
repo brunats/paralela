@@ -15,7 +15,7 @@ typedef struct {
 	int id, iniA[2], iniB[2], fimA[2], fimB[2];
 	matrix_t *A;
 	matrix_t *B;
-  matrix_t *C;
+    matrix_t *C;
 } DadosThread;
 
 /*
@@ -48,9 +48,17 @@ void matrix_transpose(int ini, int fim, matrix_t *A, matrix_t *t);
 
 double matrix_determinant(matrix_t *A);
 
+double matrix_determinant_PARALELA(matrix_t *A, int num_threads);
+
+void *matrix_copia_block(void *args);
+
+void *matrix_determinant_block(void *args);
+
 double matrix_determinant_rec(matrix_t *A);
 
 matrix_t *submatrix(matrix_t *A, int pos);
+
+double matrix_determinant_antiga(matrix_t *A);
 
 void matrix_print(matrix_t *m);
 
