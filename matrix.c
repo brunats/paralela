@@ -446,7 +446,6 @@ void matrix_transpo_PARALELA_INI(matrix_t *a, matrix_t *c, int num_threads)
 
 double matrix_determinant(matrix_t *A)
 {
-
     matrix_t *temp = NULL;
     int i, j, k, l;
     double c;
