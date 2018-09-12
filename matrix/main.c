@@ -49,6 +49,7 @@ int main(int argc, char **argv)
    //printf("Opcao:\n\t-1: Determinante\n\t-2: Soma\n\t-3: Multiplicacao\n\t-4: Transposta\n:");
    //scanf("%d", &op);
 
+<<<<<<< HEAD:matrix/main.c
    switch (op){
      case 1:{
        //ini_det--------------------------------
@@ -60,14 +61,29 @@ int main(int argc, char **argv)
        //printf("\n");
        matrix_destroy_block(a);
        end_time = wtime();
+=======
+   start_time = wtime();
+   a = matrix_create_block(nrows, ncols);
+   matrix_randfill(a);
+   switch (op){
+     case 1:{
+       //ini_det--------------------------------
+       det = matrix_determinant_PARALELA(a, num_threads);
+       //printf("Determinante: %lf\n", det);
+       //printf("\n");
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
        //fim_det--------------------------------
        break;
      }
      case 2:{
+<<<<<<< HEAD:matrix/main.c
        //ini_sum-------------------------------
        start_time = wtime();
        a = matrix_create_block(nrows, ncols);
        matrix_randfill(a);
+=======
+       //ini_sum--------------------------------
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
        b = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
        matrix_randfill(b);
@@ -89,9 +105,12 @@ int main(int argc, char **argv)
      }
      case 3:{
        //ini_multi--------------------------------
+<<<<<<< HEAD:matrix/main.c
        start_time = wtime();
        a = matrix_create_block(nrows, ncols);
        matrix_randfill(a);
+=======
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
        b = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
        matrix_randfill(b);
@@ -103,7 +122,11 @@ int main(int argc, char **argv)
        //matrix_print(b);
        //printf("\n");
        //matrix_print(c);
+<<<<<<< HEAD:matrix/main.c
 
+=======
+       
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
        matrix_destroy_block(b);
        matrix_destroy_block(c);
        matrix_destroy_block(a);
@@ -113,9 +136,12 @@ int main(int argc, char **argv)
      }
      case 4:{
        //ini_transpo--------------------------------
+<<<<<<< HEAD:matrix/main.c
        start_time = wtime();
        a = matrix_create_block(nrows, ncols);
        matrix_randfill(a);
+=======
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
        c = matrix_create_block(nrows, ncols);
        matrix_transpo_PARALELA_INI(a, c, num_threads);
 
@@ -123,7 +149,11 @@ int main(int argc, char **argv)
        //matrix_print(a);
        //printf("\n");
        //matrix_print(c);
+<<<<<<< HEAD:matrix/main.c
 
+=======
+       
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
        matrix_destroy_block(c);
        matrix_destroy_block(a);
        end_time = wtime();
@@ -135,6 +165,12 @@ int main(int argc, char **argv)
        break;
      }
    }
+<<<<<<< HEAD:matrix/main.c
+=======
+   matrix_destroy_block(a);
+   end_time = wtime();
+
+>>>>>>> 72a8b42e0a03f184186b426568b8881f78d03f2c:main.c
    printf("%d %d %f\n", nrows, ncols, end_time - start_time);
    fflush(stdout);
 
