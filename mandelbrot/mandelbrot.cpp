@@ -64,7 +64,7 @@ int main(){
 
 	for (i=0; i<q_exec; i++){
         matT[i] = f_Mandelbrot(max_row, max_column, max_n);
-        printf("%i - Exec\tTime:%fs\n",i+1, matT[i]);
+        //printf("%i - Exec\tTime:%fs\n",i+1, matT[i]);
         total += matT[i];
 	}
 	media = total/q_exec;
@@ -74,5 +74,8 @@ int main(){
 	}
   somatorio = somatorio/q_exec;
   desviopadrao = sqrt(somatorio);
+  printf("Exec Time\n");
+  for (i=0; i<q_exec; i++)
+    printf("%i %f\n",i+1, matT[i]);
   printf("\n\nMedia: %f\nDesvio Padrao: %f",media, desviopadrao);
 }
