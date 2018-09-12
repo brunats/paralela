@@ -9,13 +9,13 @@ $ make
 ```
 
 ## Exemplo
-Matrizes de 3x3 e 1 thread:
+Matrizes de 3x3, 1 thread, Operação Determinante:
 ```
-$ ./main 3 3 1
+$ ./main 3 3 1 1
 ```
-Matrizes de 1000x1000 e 10 testes, cada teste acrescentando 1 thread a cada teste:
+Matrizes de 1000x1000 e 10 testes, cada teste acrescentando 1 thread a cada teste, operacao determinante:
 ```
-$ for i in `seq 1 10`; do ./main 1000 1000 $i ; done
+$ for i in `seq 1 10`; do ./main 1000 1000 $i 1 ; done
 ```
 
 ### Autores:
