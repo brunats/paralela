@@ -8,7 +8,17 @@
 Compile:
   $ make clean
   $ make
-  $ for i in `seq 1 10`; do ./main 3 3 3; done
+  $ for j in `seq 1 10`; do for i in `seq 1 10`; do ./main 3 3 $j 1; done; done
+*/
+/*
+DETERMINANTE:
+for j in `seq 1 10`; do for i in `seq 1 10`; do ./main 3000 3000 $j 1; done; done
+SOMA:
+for j in `seq 1 10`; do for i in `seq 1 10`; do ./main 18000 18000 $j 2; done; done
+MULTIPLICACAO:
+for j in `seq 1 10`; do for i in `seq 1 10`; do ./main 2000 2000 $j 3; done; done
+TRANSPOSTA:
+for j in `seq 1 10`; do for i in `seq 1 10`; do ./main 20000 20000 $j 4; done; done
 */
 
 double wtime()
@@ -25,7 +35,7 @@ int main(int argc, char **argv)
    int num_threads = 0;
    matrix_t *a, *b, *c;
 
-   if ((argc != 4)) {
+   if ((argc != 5)) {
       printf("Uso: %s <rows> <cols> <n_threads>\n", argv[0]);
       exit(EXIT_FAILURE);
    }
@@ -33,30 +43,33 @@ int main(int argc, char **argv)
    nrows = atoi(argv[1]);
    ncols = atoi(argv[2]);
    num_threads = atoi(argv[3]);
+   op = atoi(argv[4]);
 
    printf("num_threads = %d\n", num_threads);
-   printf("Opcao:\n\t-1: Determinante\n\t-2: Soma\n\t-3: Multiplicacao\n\t-4: Transposta\n:");
-   scanf("%d", &op);
+   //printf("Opcao:\n\t-1: Determinante\n\t-2: Soma\n\t-3: Multiplicacao\n\t-4: Transposta\n:");
+   //scanf("%d", &op);
 
-   start_time = wtime();
    switch (op){
      case 1:{
        //ini_det--------------------------------
+       start_time = wtime();
        a = matrix_create_block(nrows, ncols);
        matrix_randfill(a);
        det = matrix_determinant_PARALELA(a, num_threads);
        //printf("Determinante: %lf\n", det);
        //printf("\n");
        matrix_destroy_block(a);
+       end_time = wtime();
        //fim_det--------------------------------
        break;
      }
      case 2:{
-       //ini_sum--------------------------------
+       //ini_sum-------------------------------
+       start_time = wtime();
        a = matrix_create_block(nrows, ncols);
+       matrix_randfill(a);
        b = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
-       matrix_randfill(a);
        matrix_randfill(b);
        matrix_sum_PARALELA_INI(a, b, c, num_threads);
 
@@ -67,18 +80,20 @@ int main(int argc, char **argv)
        //printf("\n");
        //matrix_print(c);
 
-       matrix_destroy_block(a);
        matrix_destroy_block(b);
        matrix_destroy_block(c);
+       matrix_destroy_block(a);
+       end_time = wtime();
        break;
        //fim_sum--------------------------------
      }
      case 3:{
        //ini_multi--------------------------------
+       start_time = wtime();
        a = matrix_create_block(nrows, ncols);
+       matrix_randfill(a);
        b = matrix_create_block(nrows, ncols);
        c = matrix_create_block(nrows, ncols);
-       matrix_randfill(a);
        matrix_randfill(b);
        matrix_multi_PARALELA_INI(a, b, c, num_threads);
 
@@ -89,17 +104,19 @@ int main(int argc, char **argv)
        //printf("\n");
        //matrix_print(c);
 
-       matrix_destroy_block(a);
        matrix_destroy_block(b);
        matrix_destroy_block(c);
+       matrix_destroy_block(a);
+       end_time = wtime();
        //fim_multi--------------------------------
        break;
      }
      case 4:{
        //ini_transpo--------------------------------
+       start_time = wtime();
        a = matrix_create_block(nrows, ncols);
-       c = matrix_create_block(nrows, ncols);
        matrix_randfill(a);
+       c = matrix_create_block(nrows, ncols);
        matrix_transpo_PARALELA_INI(a, c, num_threads);
 
        //printf("\n");
@@ -107,17 +124,17 @@ int main(int argc, char **argv)
        //printf("\n");
        //matrix_print(c);
 
-       matrix_destroy_block(a);
        matrix_destroy_block(c);
+       matrix_destroy_block(a);
+       end_time = wtime();
        //fim_transpo--------------------------------
        break;
      }
      default:{
        printf("nada nada nada\n");
+       break;
      }
    }
-   end_time = wtime();
-
    printf("%d %d %f\n", nrows, ncols, end_time - start_time);
    fflush(stdout);
 

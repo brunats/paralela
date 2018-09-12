@@ -6,7 +6,6 @@
 
 matrix_t *matrix_create_block(int rows, int cols)
 {
-    //printf("Please someone implement this function!\n");
     matrix_t *temp = NULL;
     double **dtemp = NULL, *bloco = NULL;
     int i;
@@ -18,7 +17,7 @@ matrix_t *matrix_create_block(int rows, int cols)
 
     dtemp = (double**)malloc(rows*sizeof(double*));
     bloco = (double*)malloc(rows*cols*sizeof(double));
-    //dtemp[0] = bloco;
+
     for(i=0;i<rows;i++){
         dtemp[i] = (bloco + i*cols);
     }
@@ -29,7 +28,6 @@ matrix_t *matrix_create_block(int rows, int cols)
 
 matrix_t *matrix_create_pointers(int rows, int cols)
 {
-    //printf("Please someone implement this function!\n");
     matrix_t *temp = NULL;
     double **dtemp = NULL;
     int i;
@@ -50,7 +48,6 @@ matrix_t *matrix_create_pointers(int rows, int cols)
 
 void matrix_destroy_pointers(matrix_t *m)
 {
-    //printf("Please someone implement this function!\n");
     int i;
 
     for(i=0;i<m->rows;i++){
@@ -65,8 +62,6 @@ void matrix_destroy_pointers(matrix_t *m)
 
 void matrix_destroy_block(matrix_t *m)
 {
-    //printf("Please someone implement this function!\n");
-
     free(m->data[0]);
     free(m->data);
     free(m);
@@ -114,7 +109,6 @@ void matrix_multiply(int iniA, int fimA, matrix_t *A, matrix_t *B, matrix_t *m)
 
 void *matrix_multiply_PARALELA(void *args)
 {
-
     DadosThread *p = (DadosThread *) args;
     matrix_multiply(p->iniA[0], p->fimA[0], p->A, p->B, p->C);
     return NULL;
@@ -201,27 +195,9 @@ int matrix_equal(matrix_t*A, matrix_t *B)
    }
    return 1;
 }
-/*
-matrix_t *matrix_sum(matrix_t *A, matrix_t *B, matrix_t *(*p) (int, int))
-{
-    //printf("Please someone implement this function!\n");
-    matrix_t *s;
-    int i, j;
-
-    s = (*p)(A->rows, A->cols);
-
-    for (i = 0; i < A->rows; i++){
-        for(j = 0; j < A->cols; j++){
-            s->data[i][j] = A->data[i][j]+B->data[i][j];
-        }
-    }
-    return s;
-}
-*/
 
 void matrix_sum(int *ini, int *fim, matrix_t *A, matrix_t *B, matrix_t *s)
 {
-    //printf("Please someone implement this function!\n");
     int i, j;
 
     for (i = ini[0]; i < fim[0]; i++){
@@ -229,7 +205,6 @@ void matrix_sum(int *ini, int *fim, matrix_t *A, matrix_t *B, matrix_t *s)
             s->data[i][j] = A->data[i][j]+B->data[i][j];
         }
     }
-    //printf("cc\n");
 }
 
 void *matrix_sum_PARALELA(void *args)
@@ -295,8 +270,6 @@ void matrix_sum_PARALELA_INI(matrix_t *a, matrix_t *b, matrix_t *c, int num_thre
 
 matrix_t *matrix_inversion(matrix_t *A, matrix_t *(*p) (int, int))
 {
-    //printf("Please someone implement this function!\n");
-
     matrix_t *inv = NULL, *temp = NULL;
     int i, j, k, l;
     double c;
@@ -372,7 +345,6 @@ matrix_t *matrix_inversion(matrix_t *A, matrix_t *(*p) (int, int))
 
 void matrix_transpose(int ini, int fim, matrix_t *A, matrix_t *t)
 {
-    //printf("Please someone implement this function!\n");
     int i, j;
 
     for(i=ini;i< fim;i++){
@@ -385,8 +357,6 @@ void matrix_transpose(int ini, int fim, matrix_t *A, matrix_t *t)
 void *matrix_transpose_PARALELA(void *args)
 {
     DadosThread *p = (DadosThread *) args;
-    //printf("bb\n");
-    //printf("dados da thread %i:\n\tini[0]:%i,\tfim[0]:%i,\tini[1]:%i, \tfim[1]:%i\n", p->id, p->iniA[0], p->fimA[0], p->iniA[1], p->fimA[1]);
     matrix_transpose(p->iniA[0], p->fimA[0], p->A, p->C);
     return NULL;
 }
@@ -554,7 +524,6 @@ double matrix_determinant_PARALELA(matrix_t *A, int num_threads)
 
     for(i=0;i< (temp->rows)-1;i++){
         if(temp->data[i][i] == 0.0e0){
-            //printf("A matriz não é inversível\n");
             return 0.0e0;
         }
 
