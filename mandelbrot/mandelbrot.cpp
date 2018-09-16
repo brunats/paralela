@@ -19,12 +19,12 @@ double f_Mandelbrot(int max_row, int max_column, int max_n){
 
 	char **mat = (char**)malloc(sizeof(char*)*max_row);
 
-	#pragma omp parallel for num_threads(8)
+	#pragma omp parallel for schedule(dynamic) num_threads(1)
 	for (int i=0; i<max_row;i++)
 		mat[i]=(char*)malloc(sizeof(char)*max_column);
 
 	//omp_set_nested(1);
-	#pragma omp parallel for schedule(guided) num_threads(8)
+	#pragma omp parallel for schedule(dynamic) num_threads(1)
 	for(int r = 0; r < max_row; ++r){
 		//#pragma omp parallel for schedule(guided) num_threads(8)
 		for(int c = 0; c < max_column; ++c){
