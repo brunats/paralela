@@ -17,26 +17,29 @@ $ ./main 3 3 1 1
 Matrizes de 1000x1000 e 10 testes, cada teste acrescentando 1 thread a cada teste, operacao determinante:
 ```
 $ for i in `seq 1 10`; do ./main 1000 1000 $i 1 ; done
-
 ```
 
 ## Exemplo Mandelbrot
-Ajustar o tamanho do fractal de mandelbrot e o número de iterações no arquivo mandelbrot.in.
-Ajustar a quatidade de execuções dentro do arquivo main.cpp
+Ajustar o tamanho do fractal de mandelbrot e o número de iterações no arquivo [mandelbrot.in](mandelbrot.in).
+Ajustar a quantidade de execuções dentro do arquivo [main.cpp](main.cpp)(*l.62*).
 ```
 $ cd mandelbrot
 $ make clean
 $ make
-$ ./main < mandelbrot.in
+$ ./mandelbrot < mandelbrot.in
 ```
-Matrizes de 1000x1000 e 10 testes, cada teste acrescentando 1 thread a cada teste, operacao determinante:
-```
-$ for i in `seq 1 10`; do ./main 1000 1000 $i 1 ; done
 
+## Exemplo Black-Sholes
+Ajustar o tamanho do n no arquivo [black-sholes.in](black-sholes.in).
+Ajustar a quantidade de execuções dentro do arquivo [main.cpp](main.cpp)(*linha: 70*).
+
+```
+$ cd maratona/black-sholes/
+$ make clean
+$ make
+$ ./black-sholes < black-sholes.in
 ```
 
 ### Autores:
-```
-Bruna Tavares Silva       @brunats
-Christopher Renkavieski   @ChrisRenka
-```
+* **Bruna Tavares Silva**       @brunats
+* **Christopher Renkavieski**   @ChrisRenka

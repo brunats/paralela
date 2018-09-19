@@ -47,7 +47,8 @@ int main(int argc, char* argv[]) {
 
 	int i, mem_size;
 
-	int OPT_N = 100;
+	int OPT_N;
+	scanf("%d",&OPT_N);
 
 
 	mem_size = sizeof(float) * OPT_N;
@@ -65,11 +66,15 @@ int main(int argc, char* argv[]) {
 		OptionStrike.SPData[i] = RandFloat(10.0f, 25.0f);
 		OptionYears.SPData[i] = RandFloat(1.0f, 5.0f);
 	}
+	/* QTD threads AQUI*/
+	int n_threads = 17;
 	int j, q_exec;
-  int l_threads[17] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17};
-  int n_threads = 17;
+
+	int l_threads[n_threads];
 	double matT[10], total, media, desviopadrao, somatorio, mul;
 
+	for (i = 0; i < n_threads; i++)
+		l_threads[i] = i+1;
 
   //fscanf(stdin,"%d",&n);
   printf("n_threads\tmedia\t\tdesvio\n");
@@ -77,10 +82,10 @@ int main(int argc, char* argv[]) {
     total = 0;
     somatorio = 0;
     q_exec = 10;
-		printf("oi\n");
+		//printf("oi\n");
     printf("%i\t", l_threads[j]);
     for (i = 0; i < q_exec; i++){
-					printf("ola\n");
+					//printf("ola\n");
           double start_time, end_time, final_time;
           start_time = wtime();
 					MonteCarlo(CallResultParallel.SPData, CallConfidence.SPData, StockPrice.SPData, OptionStrike.SPData, OptionYears.SPData, OPT_N, l_threads[j]);
@@ -90,6 +95,11 @@ int main(int argc, char* argv[]) {
           //printf("%i - Exec\tTime:%fs\n",i+1, matT[i]);
           total += matT[i];
           //printf("thread %i - exec %i - t %f\n",l_threads[j], i, matT[i]);
+					// results in CallResultParallel.SPData[i]
+					/*
+					for (i = 0; i < OPT_N; i++)
+						printf("%5.2f\n", CallResultParallel.SPData[i]);
+					*/
   	}
   	media = total/q_exec;
   	for (i=0; i<q_exec; i++){
@@ -101,9 +111,7 @@ int main(int argc, char* argv[]) {
     printf("\t%f\t%f\n",media, desviopadrao);
   }
 
-	// results in CallResultParallel.SPData[i]
-	for (i = 0; i < OPT_N; i++)
-		printf("%5.2f\n", CallResultParallel.SPData[i]);
+
 
 	free(CallResultParallel.SPData);
 	free(CallConfidence.SPData);
