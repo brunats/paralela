@@ -21,7 +21,7 @@ $ for i in `seq 1 10`; do ./main 1000 1000 $i 1 ; done
 ```
 
 ## Exemplo Mandelbrot
-Ajustar o tamanho do fractal de mandelbrot e o número de iterações no arquivo mandelbrot.in
+Ajustar o tamanho do fractal de mandelbrot e o número de iterações no arquivo mandelbrot.in.
 Ajustar a quatidade de execuções dentro do arquivo main.cpp
 ```
 $ cd mandelbrot
