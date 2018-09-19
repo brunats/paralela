@@ -1,5 +1,6 @@
 # Programação Paralela
 Trabalhos desenvolvidos na disciplina optativa de programação paralela em CCT - UDESC
+
 ## Instalação
 ```
 $ git clone https://github.com/brunats/programacao_paralela
@@ -20,8 +21,8 @@ $ for i in `seq 1 10`; do ./main 1000 1000 $i 1 ; done
 ```
 
 ## Exemplo Mandelbrot
-Ajustar o tamanho do fractal de mandelbrot e o número de iterações no arquivo [mandelbrot.in](mandelbrot.in).
-Ajustar a quantidade de execuções dentro do arquivo [main.cpp](main.cpp)(*l.62*).
+Ajustar a quantidade de linhas, colunas e iterções no arquivo [mandelbrot.in](maratona/black-scholes/black-scholes.in).
+Ajustar a quantidade de execuções dentro do arquivo [mandelbrot.cpp](mandelbrot/mandelbrot.cpp) (*linha: 70*).
 ```
 $ cd mandelbrot
 $ make clean
@@ -30,8 +31,8 @@ $ ./mandelbrot < mandelbrot.in
 ```
 
 ## Exemplo Black-Sholes
-Ajustar o tamanho do n no arquivo [black-sholes.in](black-sholes.in).
-Ajustar a quantidade de execuções dentro do arquivo [main.cpp](main.cpp)(*linha: 70*).
+Ajustar o tamanho do N no arquivo [black-sholes.in](maratona/black-scholes/black-scholes.cpp).
+Ajustar a quantidade de execuções dentro do arquivo [black-scholes.cpp](maratona/black-scholes/black-scholes.cpp)(*linha: 70*).
 
 ```
 $ cd maratona/black-sholes/
@@ -39,7 +40,8 @@ $ make clean
 $ make
 $ ./black-sholes < black-sholes.in
 ```
+Ao executar o *./black-sholes < black-sholes.in*, o algoritmo irá executar 10 vezes o Black-Sholes para cada quantidade de threads, a cada thread ele irá calcular a média e desvio padrão.
 
 ### Autores:
-* **Bruna Tavares Silva**       @brunats
-* **Christopher Renkavieski**   @ChrisRenka
+* **Bruna Tavares Silva**       [@brunats](https://github.com/brunats)
+* **Christopher Renkavieski**   [@ChrisRenka](https://github.com/ChrisRenka)
