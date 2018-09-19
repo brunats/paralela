@@ -1,23 +1,23 @@
 //
 // ./copyright
 //
-// INTEL CONFIDENTIAL 
+// INTEL CONFIDENTIAL
 //
-// Copyright 2011 Intel Corporation All Rights Reserved.  
+// Copyright 2011 Intel Corporation All Rights Reserved.
 //
-// The source code contained or described herein and all documents related to the 
+// The source code contained or described herein and all documents related to the
 // source code ("Material") are owned by Intel Corporation or its suppliers
-// or licensors. Title to the Material remains with Intel Corporation or its suppliers 
-// and licensors. The Material contains trade secrets and proprietary and confidential 
-// information of Intel or its suppliers and licensors. The Material is protected by 
-// worldwide copyright and trade secret laws and treaty provisions. No part of the 
+// or licensors. Title to the Material remains with Intel Corporation or its suppliers
+// and licensors. The Material contains trade secrets and proprietary and confidential
+// information of Intel or its suppliers and licensors. The Material is protected by
+// worldwide copyright and trade secret laws and treaty provisions. No part of the
 // Material may be used, copied, reproduced, modified, published, uploaded, posted,
-// transmitted, distributed, or disclosed in any way without Intel.s prior express 
+// transmitted, distributed, or disclosed in any way without Intel.s prior express
 // written permission.
 //
-// No license under any patent, copyright, trade secret or other intellectual property 
-// right is granted to or conferred upon you by disclosure or delivery of the Materials, 
-// either expressly, by implication, inducement, estoppel or otherwise. Any license under 
+// No license under any patent, copyright, trade secret or other intellectual property
+// right is granted to or conferred upon you by disclosure or delivery of the Materials,
+// either expressly, by implication, inducement, estoppel or otherwise. Any license under
 // such intellectual property rights must be express and approved by Intel in writing.
 //
 //
@@ -79,14 +79,14 @@ Basetype cdfnorminv(Basetype P) {
 }
 
 void MonteCarlo(float *h_CallResult, float *h_CallConfidence, float *S,
-	float *X, float *T, int OPT_N) {
+	float *X, float *T, int OPT_N, int nt) {
 	float l_Random[RAND_N];
 
-	#pragma omp parallel for schedule(guided) num_threads(6)
+	#pragma omp parallel for schedule(guided) num_threads(nt)
 	for (int k = 0; k < RAND_N; k++)
 		l_Random[k] = cdfnorminv<float>((k + 1.0) / (RAND_N + 1.0));
 
-	#pragma omp parallel for schedule(guided) num_threads(6)
+	#pragma omp parallel for schedule(guided) num_threads(nt)
 	for (int opt = 0; opt < OPT_N; opt++) {
 		float VBySqrtT = VOLATILITY * sqrt(T[opt]);
 		float MuByT = (RISKFREE - 0.5 * VOLATILITY * VOLATILITY) * T[opt];
