@@ -42,6 +42,20 @@ $ ./black-sholes < black-sholes.in
 ```
 Ao executar o *./black-sholes < black-sholes.in*, o algoritmo irá executar 10 vezes o Black-Sholes para cada quantidade de threads, a cada thread ele irá calcular a média e desvio padrão.
 
+## Exemplo Cholesky
+
+## Exemplo MPI
+Instalação MPI:
+```
+$ tar xzf openmpi-3.1.2.tar.gz
+$ cd openmpi-3.1.2/
+$ ./configure
+  ... check at the end that the summary shows the features you want to see enabled. For this tutorial PCI support will be useful.
+$ make
+$ sudo make install
+```
+
+
 ### Autores:
 * **Bruna Tavares Silva**       [@brunats](https://github.com/brunats)
 * **Christopher Renkavieski**   [@ChrisRenka](https://github.com/ChrisRenka)
