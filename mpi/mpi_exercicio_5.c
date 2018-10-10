@@ -13,7 +13,7 @@ typedef struct duplaMat{
   double ** matB;
 } duplaMat;
 
-duplaMat criaMatriz(int n, ){
+duplaMat criaMatriz(int n){
   double **m_A = NULL;
   double **m_B = NULL;
   double *dados_A = NULL;
@@ -43,62 +43,52 @@ duplaMat criaMatriz(int n, ){
 }
 
 //Material: https://github.com/leorrodrigues/mpi
-void master(int n){
+int main(int argc, char **argv){
   int rank, size;
-  int tag = 0;
-  int token;
-  MPI_Status status;
-  MPI_Datatype diagonal;
   double **matriz_A;
   double **matriz_B;
   int i, j;
   duplaMat dp;
+  MPI_Status status;
 
+  if(argc!=2) {
+    printf("Erro args\n");
+    exit(0);
+  }else{
+    int n=atoi(argv[1]);
+  }
 
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
-  dp = criaMatriz(size, rank);
+
+  dp = criaMatriz(n);
+
   matriz_A = dp.matA;
   matriz_B = dp.matB;
 
-  MPI_Type_vector(size*size, 1, size+1, MPI_INT, &diagonal);
-  MPI_Type_commit(&diagonal);
+  if(rank == 0) {
+		strcpy(msg,"Hello World!\n");
+		for(i=1;i<size;i++) {
+			//printf("rank[0] enviando para [%d]\n", i);
+			MPI_Send(dp,1,MPI_CHAR,i,tag, MPI_COMM_WORLD);
+		}
+		for(i=1;i<size;i++) {
+			MPI_Recv(recvmsg,12,MPI_CHAR,MPI_ANY_SOURCE,MPI_ANY_TAG, MPI_COMM_WORLD,&status);
+			printf("rank[0] recebendo de [%d]\n", status.MPI_SOURCE);
+		}
 
-  MPI_Send(matriz, 1, diagonal, 0, tag, MPI_COMM_WORLD);
-  printf("oi\n");
-  MPI_Type_free(&diagonal);
-  MPI_Finalize();
-}
-
-int main(int argc, char **argv){
-  int rank,size;
-  int **matriz_A, **matriz_B;
-
-	if(argc!=2) {
-    printf("Erro args\n");
-    exit(0);
-  }
-  int n=atoi(argv[1]);
-
-  MPI_Init(&argc, &argv);
-	MPI_Comm_size(MPI_COMM_WORLD, &size);
-	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
-	printf("Worker %d/%d started\n", rank+1, size);
-
-  if(size<2) {
-		printf("Deve possuir no minimo 2 processos\n");
-	}
-
-  matriz_A, matriz_B = criaMatriz(int n)
-
-	if (rank == 0) {
-		master (n);
 	} else {
-		slave (rank, &);
-	}
-	MPI_Finalize();
+		//printf("rank[%d] esperando de rank[0]\n", rank);
+		MPI_Recv(recvmsg,12,MPI_CHAR,0,tag, MPI_COMM_WORLD, &status);
+		//printf("rank[%d] recebeu: [%s]\n", rank, recvmsg);
+		strcpy (msg, recvmsg);
+		//printf("rank(%d) retorna msg p/ rank[0]\n", rank);
+		MPI_Send(msg,12,MPI_CHAR,status.MPI_SOURCE, tag, MPI_COMM_WORLD);
+  }
+
+
+  MPI_Finalize();
 
   return 0;
 }
