@@ -1,18 +1,19 @@
 #include <stdio.h>
 
 //compilar: nvcc matrizMultiplicacao.cu -o matrizMultiplicacao
+//for i in `seq 1 10`; do ./matrizMultiplicacao; done
 
-#define N 3
-#define B 1
+#define N 2048
+#define B 32
 
 __global__ void matrix_multi(float *a, float *b, float *c) {
-	int x = blockIdx.x * blockDim.x + threadIdx.x;
-	int y = blockIdx.y * blockDim.y + threadIdx.y;
+	int y = blockIdx.x * blockDim.x + threadIdx.x;
+	int x = blockIdx.y * blockDim.y + threadIdx.y;
 	int i;
 	float soma = 0.0;
 	if(x < N && y < N){
 		for(i=0; i<N; i++){
-			soma += a[x * i + y ] * b[x + y * i];
+			soma += a[x * N + i ] * b[y + N * i];
 		}
 		c[x + y * N] = soma;
 	}
@@ -23,6 +24,10 @@ int main() {
 	float *d_a, *d_b, *d_c;
 	int size = N;
 	dim3 dimen (B, B);
+	cudaEvent_t start, stop;
+	
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
 
 	cudaMalloc( (void **) &d_a, size*size*sizeof(float) );
 	cudaMalloc( (void **) &d_b, size*size*sizeof(float) );
@@ -33,10 +38,12 @@ int main() {
 	c = (float *)malloc( size*size*sizeof(float) );
 
 	for( int i = 0; i < N*N; i++ ) {
-		a[i] = b[i] = 1;
+		a[i] = b[i] = i;
 		c[i] = 0;
 	}
-
+    
+    cudaEventRecord(start);
+    
 	cudaMemcpy( d_a, a, size*size*sizeof(float), cudaMemcpyHostToDevice );
 	cudaMemcpy( d_b, b, size*size*sizeof(float), cudaMemcpyHostToDevice );
 
@@ -44,11 +51,25 @@ int main() {
 	matrix_multi<<<grade, dimen>>>( d_a, d_b, d_c );
 
 	cudaMemcpy( c, d_c, size*size*sizeof(float), cudaMemcpyDeviceToHost );
-
+	
+	
+	cudaEventRecord(stop);
+	cudaEventSynchronize(stop);
+    float milliseconds = 0;
+    cudaEventElapsedTime(&milliseconds, start, stop);
+    
+    printf("%f\n", milliseconds/1000.0);
+    
+    
+	//printf( "c[0] = %lf\n", c[0] );
+	//printf( "c[%d] = %lf\n",N*N, c[N*N-1] );
+	/*
 	int i;
 	for(i=0; i<N*N; i++){
 		printf( "c[%d] = %lf\n",i, c[i] );
 	}
+	*/
+	
 
 	free(a);
 	free(b);

@@ -17,7 +17,7 @@ void printaMatriz(double **m, int n){
     int i, j;
     for (i=0; i<n; i++){
         for (j=0; j<n; j++){
-            printf("%6.2lf ", m[i][j]);
+            printf("%.2lf ", m[i][j]);
         }
         printf("\n");
     }
@@ -69,7 +69,7 @@ int main(int argc, char **argv){
     MPI_Status status;
     
     int i, j, k;
-    double soma;
+    //double soma;
     matrizes ma;
 
 
@@ -82,73 +82,60 @@ int main(int argc, char **argv){
         double **matriz_B;
         double **matriz_C;
         
-        ma = criaMatriz(size);
+        ma = criaMatriz(size-1);
         matriz_A = ma.m_A;
         matriz_B = ma.m_B;
         matriz_C = ma.m_C;
-        
+        /*
         printf("Matriz A\n");
-        printaMatriz(matriz_A, size);
+        printaMatriz(matriz_A, size-1);
         printf("Matriz B\n");
-        printaMatriz(matriz_B, size);
-        //printf("Matriz C\n");
-        //printaMatriz(matriz_C, size-1); 
-        
-        //mestre envia
-        for(i=1;i<size;i++){
-            MPI_Send(matriz_B[0], (size)*(size), MPI_DOUBLE, i, tag, MPI_COMM_WORLD);
-            MPI_Send(matriz_A[i], size, MPI_DOUBLE, i, tag, MPI_COMM_WORLD);
-        }
-        
-        //mestre calcula primeira linha
-        for(j=0;j<size;j++){
-            soma = 0.0;
-            for(k=0; k<size; k++)
-                soma += (matriz_A[0][k]*matriz_B[k][j]);
-            matriz_C[0][j] = soma;
-        }
-        
-        //mestre recebe
-        for(i=1;i<size;i++){
-            MPI_Recv(&matriz_C[i][0], size, MPI_DOUBLE, i, tag, MPI_COMM_WORLD, &status);
-        }
+        printaMatriz(matriz_B, size-1);
         printf("Matriz C\n");
-        printaMatriz(matriz_C, size);
+        printaMatriz(matriz_C, size-1); 
+        */
+        for(i=1;i<size;i++){
+            MPI_Send(matriz_B, (size-1)*(size-1), MPI_DOUBLE, i, tag, MPI_COMM_WORLD);
+            MPI_Send(matriz_A[i-1], size-1, MPI_DOUBLE, i, tag, MPI_COMM_WORLD);
+        }
+        for(i=1;i<size;i++){
+            MPI_Recv(&matriz_C[i-1][0], size-1, MPI_DOUBLE, i, tag, MPI_COMM_WORLD, &status);
+        }
+        //printf("Matriz C\n");
+        //printaMatriz(matriz_C, size);
         
     
     }else{
-        double **mB = (double**)malloc((size)*(size)*sizeof(double*));
-        double *dadosB = (double*)malloc((size)*(size)*sizeof(double));
-        double *linhaA = (double*)malloc((size)*sizeof(double));
-        double *linhaC = (double*)malloc((size)*sizeof(double));
+        double **mB = (double**)malloc((size-1)*(size-1)*sizeof(double*));
+        double *dadosB = (double*)malloc((size-1)*(size-1)*sizeof(double));
+        double *linhaA = (double*)malloc((size-1)*sizeof(double));
+        double *linhaC = (double*)malloc((size-1)*sizeof(double));
+        double soma;
         
-        MPI_Recv(&dadosB[0], (size)*(size), MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status);
-        MPI_Recv(&linhaA[0], size, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status);
+        MPI_Recv(&dadosB[0], (size-1)*(size-1), MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status);
+        MPI_Recv(&linhaA[0], size-1, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status);
         
-        for(i=0;i<size;i++){
-            mB[i] = (dadosB + i*(size));
+        for(i = 0;i<size-1;i++){
+            mB[i] = (dadosB + i*(size-1));
         }
         
         //printf("hello\n");
         //printaMatriz(mB, size-1);
-        /*for(i=0;i<(size-1)*(size-1);i++){
-            printf("%5.2f ", dadosB[i]);
-        }*/
-         
-        /*for(i=0;i<size-1;i++){
+        /* 
+        for(i=0;i<size-1;i++){
             printf("%5.2f ", linhaA[i]);
         }
         printf("\n");*/
         
         
         //i = rank-1;
-        for(j=0;j<size;j++){
+        for(j=0;j<size-1;j++){
             soma = 0.0;
-            for(k=0; k<size; k++)
+            for(k=0; k<size-1; k++)
                 soma += (linhaA[k]*mB[k][j]);
             linhaC[j] = soma;
         }
-        MPI_Send(linhaC, size , MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+        MPI_Send(linhaC, size-1 , MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
         
     }
     
